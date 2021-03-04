@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { Dispatch } from 'redux';
+import PokemonSearch from './components/PokemonSearch';
+import { connect } from 'react-redux';
+import { RootStore } from './store';
+import { AppProps } from './types/types';
+import { SetPokemon } from './store/actions/PokemonActions';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const mapStateToProps = (state: RootStore): AppProps => ({
+  loading: state.pokemon.loading,
+  pokemon: state.pokemon.pokemon,
+  pokemonName: state.pokemon.pokemonName
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): AppProps => ({
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(SetPokemon(event))
+}); 
+
+class App extends Component<AppProps, RootStore> {
+  render() {
+    return (
+      <div style={{ textAlign:'center', marginTop:'2rem' }}>
+        <PokemonSearch {...this.props} />
+      </div>
+    );
+  }
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
